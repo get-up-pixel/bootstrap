@@ -1,0 +1,46 @@
+// Wrapper for the slide container and indicators
+
+//
+// Left/right controls for nav
+//
+
+.carousel-control-prev,
+.carousel-control-next {
+  // Hover/focus state
+  @include hover-focus {
+    color: $carousel-control-color;
+  }
+}
+
+// Optional indicator pips
+//
+// Add an ordered list with the following class and add a list item for each
+// slide your carousel holds.
+
+.carousel-indicators {
+  padding-left: 0; // override <ol> default
+  // Use the .carousel-control's width as margin so we don't overlay those
+  margin-right: $carousel-control-width;
+  margin-left: $carousel-control-width;
+
+  li {
+    margin-right: $carousel-indicator-spacer;
+    margin-left: $carousel-indicator-spacer;
+    background-color: rgba($carousel-indicator-active-bg, .5);
+  }
+
+  .active {
+    background-color: $carousel-indicator-active-bg;
+  }
+}
+
+
+// Optional captions
+//
+//
+
+.carousel-caption {
+  right: ((100% - $carousel-caption-width) / 2);
+  left: ((100% - $carousel-caption-width) / 2);
+  color: $carousel-caption-color;
+}

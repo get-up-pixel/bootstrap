@@ -1,0 +1,63 @@
+// .modal-open      - body class for killing the scroll
+// .modal           - container to scroll within
+// .modal-dialog    - positioning shell for the actual modal
+// .modal-content   - actual modal w/ bg and corners and stuff
+
+// Shell div to position the modal with bottom padding
+.modal-dialog {
+  margin: $modal-dialog-margin;
+}
+
+// Actual modal
+.modal-content {
+  background-color: $modal-content-bg;
+  border: $modal-content-border-width solid $modal-content-border-color;
+  @include border-radius($border-radius-lg);
+  @include box-shadow($modal-content-xs-box-shadow);
+}
+
+// Modal background
+.modal-backdrop {
+  background-color: $modal-backdrop-bg;
+}
+
+// Modal header
+// Top section of the modal w/ title and dismiss
+.modal-header {
+  padding: $modal-header-padding;
+  border-bottom: $modal-header-border-width solid $modal-header-border-color;
+}
+
+// Title text within header
+.modal-title {
+  margin-bottom: 0;
+  line-height: $modal-title-line-height;
+}
+
+// Modal body
+// Where all modal content resides (sibling of .modal-header and .modal-footer)
+.modal-body {
+  padding: $modal-inner-padding;
+}
+
+// Footer (for actions)
+.modal-footer {
+  padding: $modal-inner-padding;
+  border-top: $modal-footer-border-width solid $modal-footer-border-color;
+
+  // Easily place margin between footer elements
+  > :not(:first-child) { margin-left: .25rem; }
+  > :not(:last-child) { margin-right: .25rem; }
+}
+
+// Scale up the modal
+@include media-breakpoint-up(sm) {
+  // Automatically set modal's width for larger viewports
+  .modal-dialog {
+    margin: $modal-dialog-sm-up-margin-y auto;
+  }
+
+  .modal-content {
+    @include box-shadow($modal-content-sm-up-box-shadow);
+  }
+}
