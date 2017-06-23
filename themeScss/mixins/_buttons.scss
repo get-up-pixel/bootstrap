@@ -3,6 +3,47 @@
 // Easily pump out default styles, as well as :hover, :focus, :active,
 // and disabled options for all buttons
 
+@mixin theme-button-variant($color, $background, $border, $shininess: 0) {
+    @include button-variant($color, $background, $border);
+    $gradient-opacity: max($shininess / 100, 0.5);
+    background-image: linear-gradient(to bottom, rgba(255, 255, 255, $gradient-opacity), rgba(255, 255, 255, 0));
+
+    @if $shininess >= 50 {
+        $highlight-opacity: ($shininess - 50) / 100;
+        $text-shadow-opacity: $shininess / 100;
+        text-shadow: -1px -1px 0 transparentize($background, 1 - $text-shadow-opacity);
+        box-shadow:
+            inset -1px 3px 3px transparentize($background, 1 - $highlight-opacity),
+            inset -3px 7px 6px transparentize(#ffffff, 1 - $highlight-opacity),
+            $btn-box-shadow;
+        &:focus,
+        &.focus {
+          // Avoid using mixin so we can pass custom focus shadow properly
+          @if $enable-shadows {
+            box-shadow:
+                inset -1px 3px 3px transparentize($background, 1 - $highlight-opacity),
+                inset -3px 7px 6px transparentize(#ffffff, 1 - $highlight-opacity),
+                $btn-box-shadow,
+                0 0 0 2px rgba($border, .5);
+          } @else {
+            box-shadow:
+                inset -1px 3px 3px transparentize($background, 1 - $highlight-opacity),
+                inset -3px 7px 6px transparentize(#ffffff, 1 - $highlight-opacity),
+                0 0 0 2px rgba($border, .5);
+          }
+        }
+
+        &:active,
+        &.active,
+        .show > &.dropdown-toggle {
+            box-shadow:
+                inset -1px 3px 3px transparentize($background, 1 - $highlight-opacity),
+                inset -3px 7px 6px transparentize(#ffffff, 1 - $highlight-opacity),
+                $btn-active-box-shadow;
+        }
+    }
+}
+
 @mixin button-variant($color, $background, $border) {
   $active-background: darken($background, 10%);
   $active-border: darken($border, 12%);
