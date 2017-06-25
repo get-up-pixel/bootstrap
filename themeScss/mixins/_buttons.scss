@@ -3,44 +3,154 @@
 // Easily pump out default styles, as well as :hover, :focus, :active,
 // and disabled options for all buttons
 
-@mixin theme-button-variant($color, $background, $border, $shininess: 0) {
-    @include button-variant($color, $background, $border);
-    $gradient-opacity: max($shininess / 100, 0.5);
-    background-image: linear-gradient(to bottom, rgba(255, 255, 255, $gradient-opacity), rgba(255, 255, 255, 0));
+@mixin theme-button-variant($color, $background, $border, $shininess: 0, $thickness: 0, $depth: 0) {
+    $noop-box-shadow: 0 0 0 transparent;
+    $shininess-opacity: min($shininess / 100, 0.5);
+    $shininess-gradient: linear-gradient(to bottom, rgba(#ffffff, $shininess-opacity), rgba(#ffffff, 0));
+    $shininess-box-shadow: $noop-box-shadow;
+    $shininess-text-shadow: $noop-box-shadow;
+    $thickness-color: darken($border, 10%);
+    $thickness-box-shadow: $noop-box-shadow;
+    $thickness-box-shadow-count: $thickness * 2;
+    $depth-box-shadow: $noop-box-shadow;
 
+    $active-background: darken($background, 10%);
+    $active-border: darken($border, 12%);
+    $active-shininess-box-shadow: $noop-box-shadow;
+    $active-shininess-text-shadow: $noop-box-shadow;;
+    $active-thickness-color: darken($active-border, 5%);
+    $active-thickness-box-shadow: 0 0 0 $active-thickness-color;
+
+    color: $color;
+    background-color: $background;
+    border-color: $border;
+
+    // Shininess
+    @if $shininess > 0 {
+        background-image: $shininess-gradient;
+    }
     @if $shininess >= 50 {
         $highlight-opacity: ($shininess - 50) / 100;
-        $text-shadow-opacity: $shininess / 100;
-        text-shadow: -1px -1px 0 transparentize($background, 1 - $text-shadow-opacity);
-        box-shadow:
+        $shininess-text-shadow: -1px -1px 1px transparentize(darken($background, 5%), 1 - $shininess / 100);
+        $shininess-box-shadow:
             inset -1px 3px 3px transparentize($background, 1 - $highlight-opacity),
-            inset -3px 7px 6px transparentize(#ffffff, 1 - $highlight-opacity),
-            $btn-box-shadow;
-        &:focus,
-        &.focus {
-          // Avoid using mixin so we can pass custom focus shadow properly
-          @if $enable-shadows {
-            box-shadow:
-                inset -1px 3px 3px transparentize($background, 1 - $highlight-opacity),
-                inset -3px 7px 6px transparentize(#ffffff, 1 - $highlight-opacity),
-                $btn-box-shadow,
-                0 0 0 2px rgba($border, .5);
-          } @else {
-            box-shadow:
-                inset -1px 3px 3px transparentize($background, 1 - $highlight-opacity),
-                inset -3px 7px 6px transparentize(#ffffff, 1 - $highlight-opacity),
-                0 0 0 2px rgba($border, .5);
-          }
-        }
+            inset -3px 7px 6px transparentize(#ffffff, 1 - $highlight-opacity);
+        $active-shininess-text-shadow: -1px -1px 1px transparentize(darken($active-background, 5%), 1 - $shininess / 100);
+        $active-shininess-box-shadow:
+            inset -1px 3px 3px transparentize($active-background, 1 - $highlight-opacity),
+            inset -3px 7px 6px transparentize(#ffffff, 1 - $highlight-opacity);
+    }
 
-        &:active,
-        &.active,
-        .show > &.dropdown-toggle {
-            box-shadow:
-                inset -1px 3px 3px transparentize($background, 1 - $highlight-opacity),
-                inset -3px 7px 6px transparentize(#ffffff, 1 - $highlight-opacity),
-                $btn-active-box-shadow;
+    // Thickness
+    @for $i from 0 through $thickness-box-shadow-count {
+        @if $i > 0 {
+            $newX: -1px * $i;
+            $newY: -0.5px * $i;
+            $thickness-box-shadow:
+                $newX $newY 0 $thickness-color,
+                $thickness-box-shadow;
+            $active-thickness-box-shadow:
+                $newX $newY 0 $active-thickness-color,
+                $active-thickness-box-shadow;
         }
+    }
+
+    @if $depth > 0 {
+        $newX: -1px * $depth - 2px * $thickness;
+        $newY: 1px * $depth - 1px * $thickness;
+        $blur: 2px * $depth;
+        $depth-box-shadow: $newX $newY $blur 0 rgba(0, 0, 0, .2);
+    }
+
+    @if $enable-shadows {
+        box-shadow:
+            $shininess-box-shadow,
+            $thickness-box-shadow,
+            $btn-box-shadow,
+            $noop-box-shadow,
+            $depth-box-shadow;
+    } @else {
+        box-shadow:
+            $shininess-box-shadow,
+            $thickness-box-shadow,
+            $noop-box-shadow,
+            $depth-box-shadow;
+    }
+    text-shadow: $shininess-text-shadow;
+
+    // Hover and focus styles are shared
+    @include hover {
+      color: $color;
+      background-color: $active-background;
+      border-color: $active-border;
+      @if $enable-shadows {
+          box-shadow:
+              $active-shininess-box-shadow,
+              $active-thickness-box-shadow,
+              $btn-box-shadow,
+              $noop-box-shadow,
+              $depth-box-shadow;
+      } @else {
+          box-shadow:
+              $active-shininess-box-shadow,
+              $active-thickness-box-shadow,
+              $noop-box-shadow,
+              $depth-box-shadow;
+      }
+      text-shadow: $active-shininess-text-shadow;
+    }
+    &:focus,
+    &.focus {
+        $newX: -2px * $thickness;
+        $newY: -1px * $thickness;
+      // Avoid using mixin so we can pass custom focus shadow properly
+      @if $enable-shadows {
+        box-shadow:
+            $active-shininess-box-shadow,
+            $active-thickness-box-shadow,
+            $active-btn-box-shadow,
+            $newX $newY 0 2px rgba($border, .5),
+            $depth-box-shadow;
+      } @else {
+        box-shadow:
+            $active-shininess-box-shadow,
+            $active-thickness-box-shadow,
+            $newX $newY 0 2px rgba($border, .5),
+            $depth-box-shadow;
+      }
+      text-shadow: $active-shininess-text-shadow;
+    }
+
+    // Disabled comes first so active can properly restyle
+    &.disabled,
+    &:disabled {
+      background-color: $background;
+      border-color: $border;
+    }
+
+    &:active,
+    &.active,
+    .show > &.dropdown-toggle {
+      color: $color;
+      background-color: $active-background;
+      background-image: none; // Remove the gradient for the pressed/active state
+      border-color: $active-border;
+      @if $enable-shadows {
+        box-shadow:
+            $noop-box-shadow,
+            $noop-box-shadow,
+            $active-thickness-box-shadow,
+            $active-btn-box-shadow,
+            $noop-box-shadow,
+            $depth-box-shadow;
+      } @else {
+        box-shadow:
+            $noop-box-shadow,
+            $noop-box-shadow,
+            $active-thickness-box-shadow,
+            $noop-box-shadow,
+            $depth-box-shadow;
+      }
     }
 }
 

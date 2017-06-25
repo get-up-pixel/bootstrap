@@ -227,8 +227,8 @@ $line-height-sm:         1.5 !default;
 $border-width: 1px !default;
 
 $shininess:              $theme-shininess;
-$theme-border-radius:    $theme-roundness / 100 * 80rem;
 
+$theme-border-radius:    $theme-roundness / 100 * 80rem;
 $border-radius:          $theme-border-radius !default;
 $border-radius-lg:       $border-radius / 5 * 6 !default;
 $border-radius-sm:       $border-radius / 5 * 4 !default;
@@ -392,6 +392,8 @@ $btn-border-radius-lg:           $border-radius-lg !default;
 $btn-border-radius-sm:           $border-radius-sm !default;
 
 $btn-shininess:                  $theme-shininess;
+$btn-thickness:                  $theme-thickness;
+$btn-depth:                      $theme-depth;
 
 $btn-transition:                 all .2s ease-in-out !default;
 

@@ -31,7 +31,7 @@
 //
 
 .btn-primary {
-  @include theme-button-variant($btn-primary-color, $btn-primary-bg, $btn-primary-border-color, $btn-shininess);
+  @include theme-button-variant($btn-primary-color, $btn-primary-bg, $btn-primary-border-color, $btn-shininess, $btn-thickness, $btn-depth);
 }
 .btn-secondary {
   @include button-variant($btn-secondary-color, $btn-secondary-bg, $btn-secondary-border-color);
